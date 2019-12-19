@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zys.class_cost_sb.mapper.ChargingMapper">
+  <resultMap id="BaseResultMap" type="com.zys.class_cost_sb.pojo.Charging">
+    <!--@mbg.generated-->
+    <!--@Table charging-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="money" jdbcType="DOUBLE" property="money" />
+    <result column="charging_desc" jdbcType="VARCHAR" property="chargingDesc" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, money, charging_desc,class_id, user_id, create_time
+  </sql>
+    <select id="findAllByUserId" resultType="java.util.Map">
+      SELECT
+          c.id,
+          c.money,
+          c.create_time createTime,
+          c.charging_desc chargingDesc,
+          u.username username,
+          cl.class_name className
+      FROM
+          charging c
+      LEFT JOIN USER u ON c.user_id = u.id
+      INNER JOIN classes cl ON cl.user_id = c.user_id
+      WHERE
+          c.user_id = #{userId}
+      AND cl.id = c.class_id
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into charging(money, charging_desc, user_id, create_time,class_id)
+        values (#{money},#{chargingDesc},#{userId},#{createTime},#{classId})
+    </insert>
+</mapper>

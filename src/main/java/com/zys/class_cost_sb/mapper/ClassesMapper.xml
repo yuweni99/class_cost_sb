@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zys.class_cost_sb.mapper.ClassesMapper">
+  <resultMap id="BaseResultMap" type="com.zys.class_cost_sb.pojo.Classes">
+    <!--@mbg.generated-->
+    <!--@Table classes-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="class_name" jdbcType="VARCHAR" property="className" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, class_name, user_id, create_time
+  </sql>
+    <select id="findAll" resultType="java.util.Map">
+        select c.id,c.class_name className,u.username,c.create_time createTime from classes c left join user u on c.user_id = u.id
+    </select>
+  <select id="findAllByUserId" resultType="java.util.Map">
+    select id,class_name className,create_time createTime from classes
+    where user_id = #{userId}
+  </select>
+  <select id="countByUserIdAndClassId" resultType="java.lang.Integer">
+    select count(1) from classes where user_id = #{userId} and id = #{classId}
+  </select>
+</mapper>

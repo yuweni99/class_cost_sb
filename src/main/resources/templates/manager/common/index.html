@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>通用组件</title>
+</head>
+<body>
+    <div  id="menu">
+        <!--班费负责人-->
+        <ul th:if="${session.user.roleType == 2}" class="layui-nav layui-nav-tree">
+            <li class="layui-nav-item">
+                <a class="" href="/manager/home">首页</a>
+            </li>
+            <li class="layui-nav-item">
+                <a class="" href="javascript:;">班费管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/expend/findAll">班费支出记录</a></dd>
+                    <dd><a href="/charging/findAll">班费收缴记录</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a class="" href="javascript:;">学生管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/classes/findClassCostManagerClassList">班级管理</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a class="" href="javascript:;">系统管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/user/toUpdatePwd">修改密码</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <!--系统管理员-->
+        <ul th:if="${session.user.roleType == 1}" class="layui-nav layui-nav-tree">
+            <li class="layui-nav-item">
+                <a class="" href="/manager/home">首页</a>
+            </li>
+            <li class="layui-nav-item">
+                <a class="" href="javascript:;">班级管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a  href="/classes/findAll">班级列表</a></dd>
+                    <dd><a  href="/user/findClassConstManager">负责人列表</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a class="" href="javascript:;">系统管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/user/toUpdatePwd">修改密码</a></dd>
+                </dl>
+            </li>
+        </ul>
+
+        <!--学生-->
+        <ul th:if="${session.user.roleType == 3}" class="layui-nav layui-nav-tree">
+            <li class="layui-nav-item">
+                <a class="" href="/manager/home">首页</a>
+            </li>
+            <li class="layui-nav-item">
+                <a class="" href="javascript:;">班费管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/expend/findStuExpend">班费支出列表</a></dd>
+                    <dd><a href="/chargingHistory/findStuChargingHistory">班费缴费列表</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a class="" href="javascript:;">学生管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/user/classFellow">同班同学</a></dd>
+                </dl>
+            </li>
+
+            <li class="layui-nav-item">
+                <a class="" href="javascript:;">系统管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/user/toUpdatePwd">修改密码</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+
+<div id="header">
+    <div class="layui-logo">班费管理系统</div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;">
+                <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                [[${session.user.username}]]
+            </a>
+            <dl class="layui-nav-child">
+                <dd><a href="/user/logout">退出系统</a></dd>
+            </dl>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>修改密码</title>
+	<link rel="stylesheet" href="/lib/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+	<div class="layui-header">
+		<div th:replace="/manager/common/index :: #header"></div>
+	</div>
+
+	<div class="layui-side layui-bg-black">
+		<div class="layui-side-scroll">
+			<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+			<div th:replace="/manager/common/index :: #menu"></div>
+		</div>
+	</div>
+
+	<div class="layui-body">
+		<!-- 内容主体区域 -->
+		<div style="padding: 15px;">
+			<section class="layui-larry-box">
+				<div class="larry-personal">
+					<div class="layui-form">
+						<form id="pwdForm">
+                            <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">旧密码</label>
+                                <div class="layui-input-inline">
+                                    <input type="password" name="oldPwd" lay-verify="required"   placeholder="请输入旧密码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">新密码</label>
+                            <div class="layui-input-inline">
+                                <input type="password" name="newPwd" lay-verify="required"   placeholder="请输入新密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">确认密码</label>
+                            <div class="layui-input-inline">
+                                <input type="password" name="newPwd2" lay-verify="required"  placeholder="请确认密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn" lay-submit lay-filter="updatePwd">保存</button>
+                        </div>
+                    </div>
+                        </form>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<div class="layui-footer">
+		<!-- 底部固定区域 -->
+		© layui.com - 底部固定区域
+	</div>
+</div>
+<script src="/lib/layui/layui.js"></script>
+<script type="text/javascript" src="/js/managerJs/user.js"></script>
+</body>
+</html>

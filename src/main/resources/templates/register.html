@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/lib/layui/css/layui.css" />
+    <link rel="stylesheet" href="/css/login.css" />
+</head>
+<body class="layui-layout-body" onkeydown="onEnter();">
+<div class="layui-fluid" style="padding: 0px;">
+    <canvas id="particle"></canvas>
+    <div class="layui-form layui-form-pane layui-admin-login">
+        <div class="layui-admin-login-header">
+            <h1>学生注册</h1>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="layui-icon layui-icon-username"></i></label>
+            <div class="layui-input-block">
+                <input name="username" required lay-verify="required" class="layui-input" type="text" placeholder="请输入用户名" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="layui-icon layui-icon-password"></i></label>
+            <div class="layui-input-block">
+                <input name="password" required lay-verify="required" class="layui-input" type="password" placeholder="请输入密码" autocomplete="off"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <select style="float: right" name="classId" lay-search lay-verify="required">
+                <option value="">请选择班级</option>
+                <option th:value="${item.id}" th:each="item : ${classes}">[[${item.className}]]</option>
+            </select>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="layui-icon layui-icon-vercode"></i></label>
+            <div class="layui-input-block">
+                <input name="identifyingCode" required lay-verify="required" id="identifyingCode" style="width: 150px;display :inline-block" class="layui-input" type="text" placeholder="请输入验证码" autocomplete="off"/>
+                <img id="identifyingCodeImg" src="/identifyingCode" alt="" style="float: right;height: 38px">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="register">注册</button>
+            </div>
+                       <div class="layui-btn-container">
+                           <button class="layui-btn layui-btn-fluid" id="registerBut">去登陆</button>
+                       </div>
+        </div>
+        <!--底部-->
+        <div class="layui-footer"></div>
+    </div>
+</div>
+<script src="/lib/layui/layui.js"></script>
+<script type="text/javascript" src="/js/particle.min.js" ></script>
+<script>
+    layui.use(['layer','form','jquery'],function(){
+        var layer = layui.layer
+            ,form = layui.form
+            ,$ = layui.jquery;
+        //监控表单提交
+        form.on('submit(register)', data =>{
+            const userInfo = data.field;
+            $.ajax({
+                type: 'post',
+                url: '/user/register',
+                data: userInfo,
+                success(res){
+                    if(res.success){
+                        layer.alert('注册成功，等待班级管理员审核', {icon: 1});
+
+                        setTimeout(() => {
+                            location.href = 'login';
+                        },2000)
+                    }else{
+                        layer.alert(res.message, {icon: 2});
+                    }
+
+                },
+                error(e){
+                    console.log(e)
+                    layer.alert("系统出错了，请联系管理员~~~", {icon: 2});
+                }
+            })
+        });
+
+        $("#identifyingCodeImg").click(() => {
+            $("#identifyingCodeImg").prop('src','/identifyingCode?' + new Date().getTime())
+        })
+
+        // 跳转注册页面
+        $("#registerBut").click(() => {
+            location.href = 'login';
+        })
+
+    });
+
+
+    //登陆按钮绑定回车
+    function onEnter(){
+        if(window.event.keyCode == 13){
+            document.getElementsByTagName("button")[0].click();
+        }
+    }
+
+    let particle = new Particle('#particle', {
+        effect: 'line'
+    });
+</script>
+</body>
+</html>

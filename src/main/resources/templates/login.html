@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/lib/layui/css/layui.css" />
+    <link rel="stylesheet" href="/css/login.css" />
+</head>
+<body class="layui-layout-body" onkeydown="onEnter();">
+<div class="layui-fluid" style="padding: 0px;">
+    <canvas id="particle"></canvas>
+    <div class="layui-form layui-form-pane layui-admin-login">
+        <div class="layui-admin-login-header">
+            <h1>班费管理系统</h1>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="layui-icon layui-icon-username"></i></label>
+            <div class="layui-input-block">
+                <input name="username" required lay-verify="required" class="layui-input" type="text" placeholder="请输入用户名" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="layui-icon layui-icon-password"></i></label>
+            <div class="layui-input-block">
+                <input name="password" required lay-verify="required" class="layui-input" type="password" placeholder="请输入密码" autocomplete="off"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="layui-icon layui-icon-vercode"></i></label>
+            <div class="layui-input-block">
+                <input name="identifyingCode" required lay-verify="required" id="identifyingCode" style="width: 150px;display :inline-block" class="layui-input" type="text" placeholder="请输入验证码" autocomplete="off"/>
+                <img id="identifyingCodeImg" src="/identifyingCode" alt="" style="float: right;height: 38px">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="login">登陆</button>
+            </div>
+                       <div class="layui-btn-container">
+                           <button class="layui-btn layui-btn-fluid" id="registerBut">去注册</button>
+                       </div>
+        </div>
+        <!--底部-->
+        <div class="layui-footer"></div>
+    </div>
+</div>
+<script src="/lib/layui/layui.js"></script>
+<script type="text/javascript" src="/js/particle.min.js" ></script>
+<script>
+    layui.use(['layer','form','jquery'],function(){
+        const layer = layui.layer
+            ,form = layui.form
+            ,$ = layui.jquery;
+        //监控表单提交
+        form.on('submit(login)', data =>{
+            const userInfo = data.field;
+            $.ajax({
+                type: 'post',
+                url: '/user/login',
+                data: userInfo,
+                success(res){
+                    if(res.success){
+                       window.location.href = '/manager/home';
+                    }else{
+                        layer.alert(res.message, {icon: 2});
+                    }
+                },
+                error(e){
+                    console.log(e)
+                    layer.alert("系统出错了，请联系管理员~~~", {icon: 2});
+                }
+            })
+        });
+
+        $("#identifyingCodeImg").click(() => {
+            $("#identifyingCodeImg").prop('src','/identifyingCode?' + new Date().getTime())
+        })
+
+        // 跳转注册页面
+        $("#registerBut").click(() => {
+            location.href = 'register';
+        })
+
+    });
+
+
+    //登陆按钮绑定回车
+    function onEnter(){
+        if(window.event.keyCode == 13){
+            document.getElementsByTagName("button")[0].click();
+        }
+    }
+
+    let particle = new Particle('#particle', {
+        effect: 'line'
+    });
+</script>
+</body>
+</html>

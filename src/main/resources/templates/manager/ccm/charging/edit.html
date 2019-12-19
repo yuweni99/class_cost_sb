@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<title>编辑班费支出</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="/lib/layui/css/layui.css">
+</head>
+
+<body>
+<div class="layui-form">
+	<input type="hidden" name="id" th:value="${charging.id}">
+	<div class="layui-form-item">
+		<div class="layui-inline">
+			<label class="layui-form-label">需缴费金额</label>
+			<div class="layui-input-inline">
+				<input type="number" name="money" lay-verify="required"  th:value="${charging.money}"  placeholder="请输入需收缴金额" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">班费描述</label>
+			<div class="layui-input-inline">
+				<textarea name="chargingDesc" lay-verify="required" placeholder="请输入班费描述" class="layui-textarea">[[${charging.chargingDesc}]]</textarea>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">缴费班级</label>
+			<div class="layui-input-inline">
+				<select name="classId" th:disabled="${charging.id != null}"  lay-verify="required" lay-search>
+					<option value="">请选择班费负责人</option>
+					<option  th:each="item : ${classes}" th:value="${item.id}" th:selected="null != ${charging} and ${charging.classId == item.id}">[[${item.className}]]</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn" lay-submit lay-filter="save">保存</button>
+		</div>
+	</div>
+</div>
+<script src="/lib/layui/layui.js"></script>
+<script type="text/javascript" src="/js/managerJs/charging.js"></script>
+</body>
+
+</html>

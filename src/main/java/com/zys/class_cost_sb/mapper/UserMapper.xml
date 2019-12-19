@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zys.class_cost_sb.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.zys.class_cost_sb.pojo.User">
+    <!--@mbg.generated-->
+    <!--@Table user-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="role_type" jdbcType="INTEGER" property="roleType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, username,status,role_type, class_id, `password`, create_time
+  </sql>
+
+  <select id="findByUserName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from user where username = #{username}
+  </select>
+    <select id="findAllByRoleType" resultType="java.util.Map">
+      select id,username,create_time createTime from user where role_type = #{roleType}
+    </select>
+    <select id="countStuNumberByClassId" resultType="java.lang.Integer">
+      select count(1) from user where role_type = #{roleType} and class_id = #{classId}
+    </select>
+    <select id="selectByClassId" resultMap="BaseResultMap">
+      select id,username from user where class_id = #{classId} and role_type = #{roleType}
+    </select>
+    <select id="findSutByStatus" resultType="java.util.Map">
+      SELECT
+	u.id,
+	u.username,
+      u.status,
+	c.class_name className,
+      u.create_time createTime
+FROM
+	USER u
+left join classes c
+on c.id = u.class_id
+WHERE
+	STATUS = #{status}
+AND role_type = #{stuRoleType}
+AND class_id = #{classId}
+    </select>
+  <update id="updateStatus">
+    update user set status = #{status} where id = #{id}
+  </update>
+    <select id="findClassFellow" resultType="java.util.Map">
+        SELECT
+            u.id,
+            u.username,
+            cl.class_name className
+        FROM
+            USER u
+        left join classes cl on u.class_id = cl.id
+        WHERE
+            u.class_id = (
+                SELECT
+                    class_id
+                FROM
+                    USER u2
+                WHERE
+                    u2.id = #{id}
+            )
+    </select>
+</mapper>

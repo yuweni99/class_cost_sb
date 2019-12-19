@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zys.class_cost_sb.mapper.ExpendMapper">
+  <resultMap id="BaseResultMap" type="com.zys.class_cost_sb.pojo.Expend">
+    <!--@mbg.generated-->
+    <!--@Table expend-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="money" jdbcType="DOUBLE" property="money" />
+    <result column="use_details" jdbcType="VARCHAR" property="useDetails" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, money, use_details, class_id,user_id, create_time
+  </sql>
+    <select id="findAllByUserId" resultType="java.util.Map">
+      SELECT
+      e.id,
+      e.money,
+      e.use_details useDetails,
+      e.create_time createTime,
+      u.username,
+      cl.class_name className
+      FROM
+      expend e
+      LEFT JOIN USER u ON u.id = e.user_id
+      left join classes cl on cl.id = e.class_id
+      where e.user_id = #{userId}
+    </select>
+    <select id="findStuExpend" resultType="java.util.Map">
+      SELECT
+	e.id,
+	cl.class_name className,
+	e.money,
+	e.use_details useDetails,
+	e.create_time createTime,
+	u2.username
+FROM
+	USER u
+LEFT JOIN classes cl ON cl.id = u.class_id
+LEFT JOIN expend e ON e.user_id = cl.user_id
+LEFT JOIN USER u2 ON u2.id = cl.user_id
+WHERE
+	u.id = #{id}
+    </select>
+</mapper>

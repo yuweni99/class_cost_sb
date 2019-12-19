@@ -1,0 +1,47 @@
+.layui-layout-admin .layui-side-menu {
+	z-index: 1001;
+}
+
+.layui-layout-admin .layui-logo {
+	left: 0px;
+	top: 0px;
+	width: 220px;
+	height: 49px;
+	overflow: hidden;
+	padding-top: 0px;
+	padding-right: 15px;
+	padding-bottom: 0px;
+	padding-left: 15px;
+	font-weight: 300;
+	position: fixed;
+	z-index: 1002;
+	box-sizing: border-box;
+	background-repeat: no-repeat;
+	background-position-x: center;
+	background-position-y: center;
+}
+
+.layui-admin-pagetabs .layui-tab {
+	margin-top: 0px;
+}
+
+.layui-admin-pagetabs .layui-tab-title li {
+	border-right: 1px solid #f6f6f6;
+}
+
+.layui-admin-pagetabs .layui-tab-title .layui-this {
+	background-color: rgb(246, 246, 246);
+}
+
+.layui-admin-iframe {
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	width: 100%;
+	border: 0px;
+	height: 2000px;
+}
+.layui-bg-white{
+	background-color: white;
+}
