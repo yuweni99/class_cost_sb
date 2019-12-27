@@ -13,7 +13,7 @@ import com.zys.class_cost_sb.model.response.UserCode;
 import com.zys.class_cost_sb.pojo.Classes;
 import com.zys.class_cost_sb.pojo.User;
 import com.zys.class_cost_sb.service.UserService;
-import com.zys.class_cost_sb.utils.Md5Util;
+import com.zys.class_cost_sb.utils.Md5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +44,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         // 校验密码
-        String password = Md5Util.getMd5(userExt.getPassword() + SysConstant.PASSWORD_SALT);
+        String password = Md5Utils.getMd5(userExt.getPassword() + SysConstant.PASSWORD_SALT);
 
         if(!user.getPassword().equals(password)){
             ExceptionCast.cast(UserCode.User_PASSWORD_ERROR);
@@ -73,7 +73,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String password = userExt.getPassword();
 
         // 密码加密
-        String encryptionPassword = Md5Util.getMd5(password + SysConstant.PASSWORD_SALT);
+        String encryptionPassword = Md5Utils.getMd5(password + SysConstant.PASSWORD_SALT);
 
         userExt.setPassword(encryptionPassword);
         userExt.setRoleType(SysConstant.STUDENT_ROLE);
@@ -118,7 +118,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void updatePwd(Pwd pwd, Integer id) {
 
         // 校验原密码是否正确
-        String oldPwd = Md5Util.getMd5(pwd.getOldPwd() + SysConstant.PASSWORD_SALT);
+        String oldPwd = Md5Utils.getMd5(pwd.getOldPwd() + SysConstant.PASSWORD_SALT);
 
         User user = baseMapper.selectById(id);
 
@@ -127,7 +127,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         // 修改密码
-        String newPwd = Md5Util.getMd5(pwd.getNewPwd() + SysConstant.PASSWORD_SALT);
+        String newPwd = Md5Utils.getMd5(pwd.getNewPwd() + SysConstant.PASSWORD_SALT);
 
         // 原密码新密码不能一样
         if(oldPwd.equals(newPwd)){
@@ -152,7 +152,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void resetPwd(Integer id) {
         User user = baseMapper.selectById(id);
-        String defaultPassword = Md5Util.getMd5(SysConstant.DEFAULT__PASSWORD + SysConstant.PASSWORD_SALT);
+        String defaultPassword = Md5Utils.getMd5(SysConstant.DEFAULT__PASSWORD + SysConstant.PASSWORD_SALT);
         user.setPassword(defaultPassword);
 
         // 更新数据

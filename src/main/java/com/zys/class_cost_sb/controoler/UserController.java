@@ -12,7 +12,7 @@ import com.zys.class_cost_sb.pojo.User;
 import com.zys.class_cost_sb.service.ClassesService;
 import com.zys.class_cost_sb.service.UserService;
 import com.zys.class_cost_sb.utils.IdentifyingCodeUtils;
-import com.zys.class_cost_sb.utils.Md5Util;
+import com.zys.class_cost_sb.utils.Md5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -140,7 +140,7 @@ public class UserController extends BaseController{
         if(null == user.getId()){
             user.setCreateTime(new Date());
             user.setRoleType(SysConstant.CLASS_COST_MANAGER_ROLE);
-            String defaultPassword = Md5Util.getMd5(SysConstant.PASSWORD_SALT + SysConstant.PASSWORD_SALT);
+            String defaultPassword = Md5Utils.getMd5(SysConstant.PASSWORD_SALT + SysConstant.PASSWORD_SALT);
             user.setPassword(defaultPassword);
         }
 

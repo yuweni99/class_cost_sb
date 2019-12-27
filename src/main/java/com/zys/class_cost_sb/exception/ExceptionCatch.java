@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.zys.class_cost_sb.model.response.CommonCode;
 import com.zys.class_cost_sb.model.response.ResponseResult;
 import com.zys.class_cost_sb.model.response.ResultCode;
-import com.zys.class_cost_sb.utils.WebUtil;
+import com.zys.class_cost_sb.utils.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -47,7 +47,7 @@ public class ExceptionCatch {
         customException.printStackTrace();
 
         // 查看请求是否为ajax
-        if(WebUtil.isAjax(request)){
+        if(WebUtils.isAjax(request)){
             response.setContentType("application/json;charset=UTF-8");
             ResponseResult responseResult = new ResponseResult(resultCode);
             response.getWriter().println(JSON.toJSONString(responseResult));
@@ -62,7 +62,7 @@ public class ExceptionCatch {
     public void exception(Exception e, HttpServletRequest request,HttpServletResponse response) throws IOException {
         e.printStackTrace();
 
-        if(WebUtil.isAjax(request)){
+        if(WebUtils.isAjax(request)){
             response.setContentType("application/json;charset=UTF-8");
             ResponseResult responseResult = new ResponseResult(CommonCode.SYSTEM_ERROR);
             response.getWriter().println(JSON.toJSONString(responseResult));

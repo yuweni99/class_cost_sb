@@ -4,7 +4,6 @@ import com.zys.class_cost_sb.constant.SysConstant;
 import com.zys.class_cost_sb.exception.ExceptionCast;
 import com.zys.class_cost_sb.model.request.ChargingHistoryRequest;
 import com.zys.class_cost_sb.model.response.CommonCode;
-import com.zys.class_cost_sb.model.response.ResponseResult;
 import com.zys.class_cost_sb.pojo.User;
 import com.zys.class_cost_sb.service.ChargingHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
@@ -69,16 +67,6 @@ public class ChargingHistoryController extends BaseController {
         model.addAttribute("chargingHistories",chargingHistories);
 
         return "manager/stu/chargingHistory/index";
-    }
-
-    @GetMapping("/payment")
-    @ResponseBody
-    public ResponseResult payment(Integer id){
-
-        User user = (User) session.getAttribute("user");
-        chargingHistoryService.payment(id,user.getId());
-
-        return new ResponseResult(CommonCode.SUCCESS);
     }
 
 }

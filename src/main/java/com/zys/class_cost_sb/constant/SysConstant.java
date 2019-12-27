@@ -74,6 +74,9 @@ public class SysConstant {
      */
     public static final Integer ALI_PAY_STATUS = 1;
 
-
+    /**
+     * 支付成功状态
+     */
+    public static final String PAY_SUCCESS_STATUS = "TRADE_SUCCESS";
 
 }

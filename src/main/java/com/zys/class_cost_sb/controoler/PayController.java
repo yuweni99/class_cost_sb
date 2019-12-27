@@ -3,14 +3,14 @@ package com.zys.class_cost_sb.controoler;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.zys.class_cost_sb.config.AlipayConfig;
+import com.zys.class_cost_sb.constant.SysConstant;
 import com.zys.class_cost_sb.service.PayHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -24,6 +24,9 @@ public class PayController extends BaseController {
 
     @Autowired
     private PayHistoryService payHistoryService;
+
+    @Autowired
+    private AlipayConfig alipayConfig;
 
 
     /**
@@ -47,68 +50,53 @@ public class PayController extends BaseController {
      * @return
      */
     @GetMapping("/aliPaySyncBack")
-    public String returnUrl() {
-        return "redirect:/chargingHistory/findStuChargingHistory?isPay=1";
+    public String aliPaySyncBack() {
+        return "manager/pay/status";
     }
 
     /**
      * 异支付宝步回调
      * @return
      */
-    @PostMapping("/aliPayAsyncBack")
+    @PostMapping(value = "/aliPayAsyncBack",produces = {MediaType.TEXT_HTML_VALUE})
     @ResponseBody
-    public String notifyUrl() throws AlipayApiException {
-
-        Map<String,String> params = getParams();
-
-
-        boolean signVerified = AlipaySignature.rsaCheckV1(params, AlipayConfig.alipay_public_key, AlipayConfig.charset, AlipayConfig.sign_type); //调用SDK验证签名
+    public String aliPayAsyncBack(@RequestParam Map<String,String> params) throws AlipayApiException {
+        boolean signVerified = AlipaySignature.rsaCheckV1(params, alipayConfig.getAliPayPublicKey(), alipayConfig.getCharset(), alipayConfig.getSignType()); //调用SDK验证签名
 
         if(signVerified) {//验证成功
-            //商户订单号
-            String out_trade_no = request.getParameter("out_trade_no");
-
-            //支付宝交易号
-            String trade_no = request.getParameter("trade_no");
 
             //交易状态
-            String trade_status = request.getParameter("trade_status");
+            String tradeStatus = request.getParameter("trade_status");
 
-            // 交易成功
-            if(trade_status.equals("TRADE_SUCCESS")){
-
+            // 校验交易是否成功
+            if(!SysConstant.PAY_SUCCESS_STATUS.equals(tradeStatus)){
+                logger.error("交易失败");
+                return "fail";
             }
 
+            // 校验app_id是否为商户本身
+            String appId = params.get("app_id");
+
+            if(!alipayConfig.getAppId().equals(appId)){
+                logger.error("当前支付app_id不是商户本身");
+                return "fail";
+            }
+
+            // 修改订单支付状态
+            boolean success = payHistoryService.updatePayStatus(params);
+
+            if(!success){
+                return "fail";
+            }
+
+            return "success";
         }else {//验证失败
             //调试用，写文本函数记录程序运行情况是否正常
             String sWord = AlipaySignature.getSignCheckContentV1(params);
-            AlipayConfig.logResult(sWord);
+            alipayConfig.logResult(sWord);
             return "fail";
         }
 
-        return "success";
-    }
-
-    /**
-     * 获取请求参数
-     * @return
-     */
-    private Map<String, String> getParams() {
-
-        Map<String,String> params = new HashMap<>();
-        Map<String,String[]> requestParams = request.getParameterMap();
-        for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext();) {
-            String name = (String) iter.next();
-            String[] values = (String[]) requestParams.get(name);
-            String valueStr = "";
-            for (int i = 0; i < values.length; i++) {
-                valueStr = (i == values.length - 1) ? valueStr + values[i]
-                        : valueStr + values[i] + ",";
-            }
-            params.put(name, valueStr);
-        }
-
-        return params;
     }
 
 

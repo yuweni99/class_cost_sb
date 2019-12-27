@@ -15,6 +15,7 @@ import com.zys.class_cost_sb.pojo.Charging;
 import com.zys.class_cost_sb.pojo.ChargingHistory;
 import com.zys.class_cost_sb.pojo.PayHistory;
 import com.zys.class_cost_sb.service.PayHistoryService;
+import com.zys.class_cost_sb.utils.DateUtils;
 import com.zys.class_cost_sb.utils.UuidUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class PayHistoryServiceImpl extends ServiceImpl<PayHistoryMapper, PayHist
 
     @Autowired
     private ChargingMapper chargingMapper;
+
+    @Autowired
+    private AlipayConfig alipayConfig;
 
 
     @Override
@@ -66,6 +70,56 @@ public class PayHistoryServiceImpl extends ServiceImpl<PayHistoryMapper, PayHist
         return result;
     }
 
+    @Override
+    @Transactional
+    public boolean updatePayStatus(Map<String, String> params) {
+
+        //商户订单号
+        String outTradeNo = params.get("out_trade_no");
+
+        //支付宝交易号
+        String tradeNo = params.get("trade_no");
+
+
+        // 根据商户订单号查询支付订单
+        PayHistory payHistory = baseMapper.selectById(outTradeNo);
+
+        // 查询不到支付订单
+        if(null == payHistory){
+            log.error("查询不到订单号为{}的支付订单",outTradeNo);
+            return false;
+        }
+
+        // 校验支付金额
+        String buyerPayAmount = params.get("buyer_pay_amount"); // 用户付款金额
+
+        if(!payHistory.getMoney().equals(Double.valueOf(buyerPayAmount))){
+            log.error("用户支付金额{}少于需支付金额{}",buyerPayAmount,payHistory.getMoney());
+            return false;
+        }
+
+        // 修改支付状态
+
+        Date gmtPayment = DateUtils.parse(params.get("gmt_payment"));
+
+        payHistory.setTradeNo(tradeNo); // 保存支付宝交易号
+        payHistory.setStatus(SysConstant.END_PAYMENT); // 修改支付状态
+
+        payHistory.setPayTime(gmtPayment);
+
+        baseMapper.updateById(payHistory);
+
+        // 修改班费缴费历史记录状态
+        ChargingHistory chargingHistory = chargingHistoryMapper.selectById(payHistory.getChargingHistoryId());
+        chargingHistory.setStatus(SysConstant.PAID_FEE_STATUS);
+        chargingHistory.setUpdateTime(gmtPayment);
+
+        chargingHistoryMapper.updateById(chargingHistory);
+
+        log.info("支付成功支付金额为{}，支付订单为{}",buyerPayAmount,outTradeNo);
+        return true;
+    }
+
     /**
      * 发起支付
      *
@@ -75,12 +129,14 @@ public class PayHistoryServiceImpl extends ServiceImpl<PayHistoryMapper, PayHist
      */
     private String initiationOfPayments(String uuid, Charging charging) throws AlipayApiException {
 
-        AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
+        AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig.getGatewayUrl(),
+                alipayConfig.getAppId(), alipayConfig.getMerchantPrivateKey(),
+                "json", alipayConfig.getCharset(), alipayConfig.getAliPayPublicKey(), alipayConfig.getSignType());
 
         //设置请求参数
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
-        alipayRequest.setReturnUrl(AlipayConfig.return_url);
-        alipayRequest.setNotifyUrl(AlipayConfig.notify_url);
+        alipayRequest.setReturnUrl(alipayConfig.getReturnUrl());
+        alipayRequest.setNotifyUrl(alipayConfig.getNotifyUrl());
 
         Map<String,Object> payParamMap = new HashMap<>();
 
@@ -89,7 +145,7 @@ public class PayHistoryServiceImpl extends ServiceImpl<PayHistoryMapper, PayHist
         payParamMap.put("subject","班费缴纳");
         payParamMap.put("body",charging.getChargingDesc());
         payParamMap.put("product_code","FAST_INSTANT_TRADE_PAY");
-        payParamMap.put("timeout_express",AlipayConfig.timeout_express);
+        payParamMap.put("timeout_express",alipayConfig.getTimeoutExpress());
 
         // 转json
         String payParamJson = JSON.toJSONString(payParamMap);
