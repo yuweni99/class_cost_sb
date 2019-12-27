@@ -17,7 +17,7 @@ layui.use(['layer','form','jquery','element'], function(){
  */
 function payment(id) {
         // 发送ajax请求删除数据
-        $.ajax({
+       /* $.ajax({
             type: 'get',
             url: '/chargingHistory/payment',
             data: {id},
@@ -37,7 +37,8 @@ function payment(id) {
             error(e){
                 layer.alert("系统出错了，请联系管理员~~~", {icon: 2});
             }
-        });
+        });*/
 
-        layer.close(index);
+        // layer.close(index);
+    window.location.href = "/pay/aliPayPayment?id=" + id;
 }

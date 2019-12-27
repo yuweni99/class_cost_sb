@@ -57,4 +57,23 @@ public class SysConstant {
      * 已缴费
      */
     public static final Integer PAID_FEE_STATUS = 1;
+
+    /**
+     * 未支付状态
+     */
+    public static final Integer NO_PAYMENT_STATUS = 0;
+
+
+    /**
+     * 已支付
+     */
+    public static final Integer END_PAYMENT = 1;
+
+    /**
+     * 支付宝支付
+     */
+    public static final Integer ALI_PAY_STATUS = 1;
+
+
+
 }
