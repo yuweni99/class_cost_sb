@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zys.class_cost_sb.mapper.PayHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.zys.class_cost_sb.pojo.PayHistory">
+    <!--@mbg.generated-->
+    <!--@Table pay_history-->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="trade_no" jdbcType="VARCHAR" property="tradeNo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="money" jdbcType="DOUBLE" property="money" />
+    <result column="pay_type" jdbcType="INTEGER" property="payType" />
+    <result column="charging_history_id" jdbcType="INTEGER" property="chargingHistoryId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, create_time, pay_time, update_time, user_id, money, pay_type, charging_history_id, trade_no,
+    `status`
+  </sql>
+</mapper>
